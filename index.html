@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cloud Spark</title>
+        <style>
+                @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Montserrat:wght@400;700&display=swap');
+
+                body {
+                        font-family: 'Poppins', sans-serif;
+                        text-align: center;
+                        margin: 0;
+                        padding: 0;
+                        background: linear-gradient(45deg, #0014f5cd, #2575fc);
+                        color: #fff;
+                        min-height: 100vh;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column;
+                }
+
+                .container {
+                        background: rgba(255, 255, 255, 0.9);
+                        padding: 40px;
+                        border-radius: 15px;
+                        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+                        max-width: 450px;
+                        width: 100%;
+                        margin: 20px;
+                        animation: fadeIn 1s ease-in-out;
+                }
+
+                h2 {
+                        font-family: 'Montserrat', sans-serif;
+                        font-size: 2.8rem;
+                        margin-bottom: 10px;
+                        color: #ff0000;
+                        text-shadow: 2px 3px 8px rgba(0, 0, 0, 1);
+                }
+
+                .subtitle {
+                        font-family: 'Raleway', sans-serif;
+
+                        font-size: 1.2rem;
+                        color: #666;
+                        margin-bottom: 20px;
+                }
+
+                input {
+                        padding: 15px;
+                        width: 85%;
+                        margin-bottom: 20px;
+                        border: 2px solid #ddd;
+                        border-radius: 25px;
+                        outline: none;
+                        font-size: 16px;
+                        text-align: center;
+                        background: #f9f9f9;
+                        color: #333;
+                        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                input::placeholder {
+                        color: #999;
+                }
+
+                input:focus {
+                        border-color: #2575fc;
+                        box-shadow: 0 0 8px rgba(37, 117, 252, 0.6);
+                }
+
+                button {
+                        padding: 12px 25px;
+                        background: #2575fc;
+                        color: #fff;
+                        border: none;
+                        cursor: pointer;
+                        border-radius: 25px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        transition: background 0.3s ease, transform 0.2s ease;
+                }
+
+                button:hover {
+                        background: #1a5bbf;
+                        transform: translateY(-4px);
+                }
+
+                #weather-result {
+                        margin-top: 20px;
+                        font-size: 18px;
+                        font-weight: 600;
+                        color: #333;
+                        animation: slideIn 0.5s ease-in-out;
+                }
+
+                img {
+                        margin-top: 10px;
+                        width: 80px;
+                        filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+                }
+
+                @keyframes fadeIn {
+                        from {
+                                opacity: 0;
+                                transform: translateY(-20px);
+                        }
+
+                        to {
+                                opacity: 1;
+                                transform: translateY(0);
+                        }
+                }
+
+                @keyframes slideIn {
+                        from {
+                                opacity: 0;
+                                transform: translateY(20px);
+                        }
+
+                        to {
+                                opacity: 1;
+                                transform: translateY(0);
+                        }
+                }
+
+                @media (max-width: 600px) {
+                        .container {
+                                padding: 20px;
+                                width: 90%;
+                        }
+
+                        h2 {
+                                font-size: 2.2rem;
+                        }
+
+                        input {
+                                width: 100%;
+                        }
+                }
+
+                footer {
+                        margin-top: 40px;
+                        font-size: 0.9rem;
+                        color: #fff;
+                        text-align: center;
+                        clear: both;
+                        /* Ensures the footer stays under the content */
+                }
+
+                footer a {
+                        color: #f3ff08;
+                        text-decoration: none;
+                }
+
+                footer p {
+                        margin: 5px 0;
+                }
+        </style>
+</head>
+
+<body>
+        <div class="container">
+                <h2>CLOUD SPARK</h2>
+                <p class="subtitle">Check Real-Time Weather Updates</p>
+                <input type="text" id="location" placeholder="Enter Location">
+                <button onclick="getWeather()">Get Weather</button>
+                <div id="weather-result"></div>
+        </div>
+
+        <footer>
+                <p>&copy; 2025 Supan Roy. All Rights Reserved.</p>
+                <p>Powered by <a href="https://www.weatherapi.com/" target="_blank">WeatherAPI</a></p>
+        </footer>
+
+        <script>
+                async function getWeather() {
+                        let location = document.getElementById('location').value;
+                        if (!location) {
+                                alert('Please enter a location');
+                                return;
+                        }
+                        let apiKey = '4798abe2159c4848b61155410250402';
+                        let url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+
+                        try {
+                                let response = await fetch(url);
+                                let data = await response.json();
+                                if (data.error) {
+                                        document.getElementById('weather-result').innerHTML = `<p style="color: #ff4a3d;">${data.error.message}</p>`;
+                                } else {
+                                        document.getElementById('weather-result').innerHTML =
+                                                `<p>Location: ${data.location.name}, ${data.location.country}</p>
+                         <p>Temperature: ${data.current.temp_c}°C</p>
+                         <p>Condition: ${data.current.condition.text}</p>
+                         <img src="${data.current.condition.icon}" alt="Weather icon">`;
+                                }
+                        } catch (error) {
+                                document.getElementById('weather-result').innerHTML = `<p style="color: #ff4a3d;">Failed to fetch weather data.</p>`;
+                        }
+                }
+        </script>
+</body>
+
+</html>
